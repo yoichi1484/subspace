@@ -1,6 +1,11 @@
 # Subspace-based Set Operations on a Pre-trained Word Embedding Space
 
 
+## Setup
+Install the required packages.
+```
+pip install -r requirements.txt
+```
 
 ## Set similarity
 Our subspace-based sentence (set of words) similarity can be easily computed as follows.
@@ -22,7 +27,7 @@ Evaluation experiments on the STS task can be conducted with ```SentEval```.
 The evaluation scripts and the calculation of correlation coefficients are based on the code of [Gao & Yao](https://github.com/princeton-nlp/SimCSE).
 Here is how to run the script:
 ```
-$ sh run_sts.sh
+sh run_sts.sh
 ```
 
 
