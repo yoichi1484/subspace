@@ -3,7 +3,7 @@
 
 
 ## Set similarity
-Sentence similarity can be calculated using our set similarity.
+Our subspace-based sentence similarity can be easily computed as follows.
 
 ### Usage
 ```python
@@ -27,7 +27,7 @@ $ sh run_sts.sh
 
 
 ## Other set operations
-The basis of union, intersection, orthogonal complement, etc. based on quantum logic can be computed as follows.
+Other subspace-based set operations such as union, intersection, orthogonal complement, soft membership and can be computed as follows.
 
 ```python
 import numpy as np
