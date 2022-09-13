@@ -19,7 +19,7 @@ scorer(sentences_a, sentences_b)
 
 ### STS task
 Evaluation experiments on the STS task will be conducted with ```SentEval```. 
-The evaluation scripts and the calculation of correlation coefficients are based on the code of (Gao & Yao)[https://github.com/princeton-nlp/SimCSE].
+The evaluation scripts and the calculation of correlation coefficients are based on the code of [Gao & Yao](https://github.com/princeton-nlp/SimCSE).
 Here is how to run the script:
 ```
 $ sh run_sts.sh
