@@ -3,7 +3,7 @@
 
 
 ## Set similarity
-Our subspace-based sentence similarity can be easily computed as follows.
+Our subspace-based sentence (set of words) similarity can be easily computed as follows.
 
 ### Usage
 ```python
