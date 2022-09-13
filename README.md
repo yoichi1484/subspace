@@ -27,15 +27,15 @@ $ sh run_sts.sh
 
 
 ## Other set operations
-Other subspace-based set operations such as union, intersection, orthogonal complement, soft membership and can be computed as follows.
+Other subspace-based set operations such as union, intersection, orthogonal complement, and soft membership can be computed as follows.
 
 ```python
 import numpy as np
 from subspace.operations import *
 
 np.random.seed(0)
-A = np.random.random_sample((50, 300))
-B = np.random.random_sample((80, 300))
+A = np.random.random_sample((50, 300)) # 50 stacked 300-dimensional word vectors
+B = np.random.random_sample((80, 300)) # 80 stacked 300-dimensional word vectors
 ```
 
 Compute bases of the subspace
