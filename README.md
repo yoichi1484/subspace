@@ -5,6 +5,7 @@
 ## Set similarity
 Sentence similarity can be calculated using our set similarity.
 
+### Usage
 ```python
 from subspace.tool import SubspaceJohnsonSimilarity
 
@@ -16,8 +17,10 @@ sentences_b = ["A man wearing a hard hat is dancing.", "A child is riding a hors
 scorer(sentences_a, sentences_b) 
 ```
 
+### STS task
 Evaluation experiments on the STS task will be conducted with ```SentEval```. 
 The evaluation scripts and the calculation of correlation coefficients are based on the code of (Gao & Yao)[https://github.com/princeton-nlp/SimCSE].
+Here is how to run the script:
 ```
 $ sh run_sts.sh
 ```
