@@ -41,13 +41,13 @@ B = np.random.random_sample((80, 300)) # 80 stacked 300-dimensional word vectors
 Compute bases of the subspace
 ```python
 SA = subspace(A)
-SA.shape # (90, 300)
+SA.shape # (50, 300)
 ```
 
 Compute bases of the orthogonal complement
 ```python
 A_NOT = orthogonal_complement(A)
-A_NOT.shape # (210, 300)
+A_NOT.shape # (250, 300)
 ```
 
 Compute bases of the intersection
@@ -59,7 +59,7 @@ A_AND_B.shape # (1, 300)
 Compute bases of the sum space
 ```python
 A_OR_B = sum_space(A, B)
-A_OR_B.shape # (180, 300)
+A_OR_B.shape # (130, 300)
 ```
 
 Compute soft membership degree
