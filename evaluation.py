@@ -30,7 +30,7 @@ import torch
 import transformers
 from transformers import AutoModel, AutoTokenizer
 from prettytable import PrettyTable
-import similarity
+import baselines
 import subspace
 
 # Set up logger
@@ -49,13 +49,13 @@ def subspace_johnson(x, y, weight = "L2"):
     return subspace.subspace_johnson(x.unsqueeze(0), y.unsqueeze(0), weight).numpy()[0]
 
 def dynamax_jaccard(x, y):
-    return similarity.dynamax_jaccard(x.numpy(), y.numpy())
+    return baselines.dynamax_jaccard(x.numpy(), y.numpy())
 
 def symbolic_johnson(x, y):
-    return similarity.symbolic_johnson(x, y)
+    return baselines.symbolic_johnson(x, y)
 
 def symbolic_jaccard(x, y):
-    return similarity.symbolic_jaccard(x, y)
+    return baselines.symbolic_jaccard(x, y)
 
 def print_table(task_names, scores):
     tb = PrettyTable()
