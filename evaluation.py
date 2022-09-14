@@ -1,12 +1,37 @@
+#MIT License
+#
+#Copyright (c) 2021 Princeton Natural Language Processing
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+# ==============================================================================
+
 import sys
 import io, os
 import numpy as np
 import logging
 import argparse
-from prettytable import PrettyTable
 import torch
 import transformers
 from transformers import AutoModel, AutoTokenizer
+from prettytable import PrettyTable
+import similarity
+import subspace
 
 # Set up logger
 logging.basicConfig(format='%(asctime)s : %(message)s', level=logging.DEBUG)
@@ -19,11 +44,6 @@ PATH_TO_DATA = './SentEval/data'
 sys.path.insert(0, PATH_TO_SENTEVAL)
 import senteval
 
-
-# Import similarities
-import similarity
-#from subspace.similarity import subspace_johnson
-import subspace
 
 def subspace_johnson(x, y, weight = "L2"):
     return subspace.subspace_johnson(x.unsqueeze(0), y.unsqueeze(0), weight).numpy()[0]
@@ -50,11 +70,13 @@ def main():
     parser.add_argument("--pooler", type=str, 
             choices=['cls', 
                      'cls_before_pooler',                 # CLS-cos
-                     'avg', 'avg_top2', 'avg_first_last', # Avg-cos
+                     'avg',                               # Avg-cos
+                     #'avg_top2', 
+                     #'avg_first_last', 
                      'hidden_states_subspace',            # SubspaceJohnson
                      'hidden_states_dynamax',             # DynaMax
-                     "words_for_symbolic_johnson",        # Symbolic set similarity (Johnson)
-                     "words_for_symbolic_jaccard"],       # Symbolic set similarity (Jaccard)
+                     'words_for_symbolic_johnson',        # Symbolic set similarity (Johnson)
+                     'words_for_symbolic_jaccard'],       # Symbolic set similarity (Jaccard)
             help="Which pooler to use")
     parser.add_argument("--mode", type=str, 
             choices=['dev', 'test', 'fasttest'],

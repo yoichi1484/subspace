@@ -80,7 +80,7 @@ def soft_membership(A, v):
             A: bases of the linear subspace (n_bases, dim)
             v: vector (dim,)
         Return:
-            soft membership degree
+            membership degree
         Example:
             >>> A = np.array([[1,0,0], [0,1,0]])
             >>> v = np.array([1,0,0])

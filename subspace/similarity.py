@@ -1,7 +1,7 @@
 import torch
 
 def subspace(A):
-    """ Return the matrix of the subspace
+    """ Compute orthonormal bases of the subspace
         Arg:
             A: Bases of a linear subspace (batchsize, num_bases, emb_dim)
         Return:
@@ -22,7 +22,7 @@ def soft_membership(S, v):
             S: Orthonormalized bases of a linear subspace (batchsize, num_bases, emb_dim)
             v: vector (batchsize, emb_dim)
         Return:
-            soft_membership degree (batchsize,)
+            membership degree (batchsize,)
         Example:
             >>> S = torch.randn(5, 4, 300)
             >>> v = torch.randn(5, 300)

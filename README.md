@@ -14,20 +14,26 @@ Our subspace-based sentence (set of words) similarity can be easily computed as 
 ```python
 from subspace.tool import SubspaceJohnsonSimilarity
 
-scorer = SubspaceJohnsonSimilarity(device='cpu', model_name_or_path='bert-base-uncased')
+scorer = SubspaceJohnsonSimilarity(device='cpu', model_name_or_path='princeton-nlp/unsup-simcse-bert-base-uncased')
 
 sentences_a = ["A man with a hard hat is dancing.", "A young child is riding a horse."]
 sentences_b = ["A man wearing a hard hat is dancing.", "A child is riding a horse."]
 
-scorer(sentences_a, sentences_b) # tensor([1.9687, 1.8587])
+scorer(sentences_a, sentences_b) # tensor([1.9746, 1.9562])
 ```
 
 ### STS task
 Evaluation experiments on the STS task can be conducted with ```SentEval```. 
+The first step is to download the evaluation data.
+```
+cd SentEval/data/downstream/
+bash download_dataset.sh
+```
+
 The evaluation scripts and the calculation of correlation coefficients are based on the code of [Gao & Yao](https://github.com/princeton-nlp/SimCSE).
 Here is how to run the script:
 ```
-sh run_sts.sh
+bash run_sts.sh
 ```
 
 
