@@ -1,5 +1,5 @@
 # Subspace-based Set Operations on a Pre-trained Word Embedding Space
-Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace-based Set Operations on a Pre-trained Word Embedding Space](https://arxiv.org/abs/2210.13034) 
+Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace-based Set Operations on a Pre-trained Word Embedding Space](https://arxiv.org/abs/2210.13034) (Preprint, 2022)
 
 
 ## Setup
