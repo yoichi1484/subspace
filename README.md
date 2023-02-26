@@ -1,4 +1,5 @@
 # Subspace-based Set Operations on a Pre-trained Word Embedding Space
+Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace-based Set Operations on a Pre-trained Word Embedding Space](https://arxiv.org/abs/2210.13034) 
 
 
 ## Setup
@@ -77,4 +78,13 @@ Compute soft membership degree
 ```python
 v = np.random.random_sample(300,) 
 soft_membership(A, v) # 0.89
+```
+
+## Citation
+```bibtex
+@inproceedings{Ishibashi:Subspace:2022,
+  author = {Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura},  
+  title = {Subspace-based Set Operations on a Pre-trained Word Embedding Space},
+  year = {2022}
+}
 ```
