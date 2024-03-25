@@ -1,5 +1,5 @@
-# Subspace-based Set Operations on a Pre-trained Word Embedding Space
-Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace-based Set Operations on a Pre-trained Word Embedding Space](https://arxiv.org/abs/2210.13034) (Preprint, 2022)
+# Beyond Vectors: Subspace Representations for Embedding Set Operations
+Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Beyond Vectors: Subspace Representations for Embedding Set Operations](https://arxiv.org/abs/2210.13034) (NAACL, 2024)
 
 
 ## Setup
@@ -13,14 +13,14 @@ Our subspace-based sentence (set of words) similarity can be easily computed as 
 
 ### Usage
 ```python
-from subspace.tool import SubspaceJohnsonSimilarity
+from subspace.tool import SubspaceBERTScore
 
-scorer = SubspaceJohnsonSimilarity(device='cpu', model_name_or_path='princeton-nlp/unsup-simcse-bert-base-uncased')
+scorer = SubspaceBERTScore(device='cpu', model_name_or_path='bert-base-uncased')
 
 sentences_a = ["A man with a hard hat is dancing.", "A young child is riding a horse."]
 sentences_b = ["A man wearing a hard hat is dancing.", "A child is riding a horse."]
 
-scorer(sentences_a, sentences_b) # tensor([1.9746, 1.9562])
+scorer(sentences_a, sentences_b)
 ```
 
 ### STS task
