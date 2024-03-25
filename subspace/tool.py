@@ -3,10 +3,10 @@ import transformers
 from transformers import AutoTokenizer, AutoModel
 from numpy import ndarray
 import numpy as np
-from .similarity import subspace_johnson
+from .similarity import subspace_johnson, subspace_bert_score
 
 
-class SubspaceJohnsonSimilarity:
+class MySimilarity:
     def __init__(self, device='cpu', model_name_or_path='bert-base-uncased'):
         # Set up model
         self.device = device
@@ -17,9 +17,7 @@ class SubspaceJohnsonSimilarity:
         self.max_length = 128
 
     def __call__(self, sentence1, sentence2, weight="L2"):
-        hidden_states1 = self.encode(sentence1)
-        hidden_states2 = self.encode(sentence2)
-        return subspace_johnson(hidden_states1, hidden_states2, weight)
+        pass
     
     
     def encode(self, sentence, return_numpy=False, batch_size=12):
@@ -53,3 +51,15 @@ class SubspaceJohnsonSimilarity:
         return embeddings
 
 
+class SubspaceJohnsonSimilarity(MySimilarity):
+    def __call__(self, sentence1, sentence2, weight="L2"):
+        hidden_states1 = self.encode(sentence1)
+        hidden_states2 = self.encode(sentence2)
+        return subspace_johnson(hidden_states1, hidden_states2, weight)
+    
+        
+class SubspaceBERTScore(MySimilarity):
+    def __call__(self, sentence1, sentence2, weight="L2"):
+        hidden_states1 = self.encode(sentence1)
+        hidden_states2 = self.encode(sentence2)
+        return subspace_bert_score(hidden_states1, hidden_states2, weight)
