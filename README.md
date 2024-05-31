@@ -1,5 +1,5 @@
-# Beyond Vectors: Subspace Representations for Embedding Set Operations
-Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Beyond Vectors: Subspace Representations for Embedding Set Operations](https://arxiv.org/abs/2210.13034) (NAACL, 2024)
+# Subspace Representations for Soft Set Operations and Sentence Similarities
+Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace Representations for Soft Set Operations and Sentence Similarities](https://arxiv.org/abs/2210.13034) (NAACL, 2024)
 
 
 ## Setup
