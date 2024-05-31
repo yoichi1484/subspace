@@ -39,45 +39,48 @@ cd ../../../
 bash run_sts.sh
 ```
 
-
 ## Other set operations
-Other subspace-based set operations such as union, intersection, orthogonal complement, and soft membership can be computed as follows.
+Other subspace-based set operations such as union, intersection, orthogonal complement, and soft membership can be computed as follows using torch.
 
 ```python
-import numpy as np
+import torch
 from subspace.operations import *
 
-np.random.seed(0)
-A = np.random.random_sample((50, 300)) # 50 stacked 300-dimensional word vectors
-B = np.random.random_sample((80, 300)) # 80 stacked 300-dimensional word vectors
+torch.manual_seed(0)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+A = torch.rand((50, 300), device=device) # 50 stacked 300-dimensional word vectors
+B = torch.rand((80, 300), device=device) # 80 stacked 300-dimensional word vectors
 ```
 
 Compute bases of the subspace
 ```python
 SA = subspace(A)
-SA.shape # (50, 300)
+SA.shape # torch.Size([50, 300])
 ```
 
 Compute bases of the orthogonal complement
 ```python
 A_NOT = orthogonal_complement(A)
-A_NOT.shape # (250, 300)
+A_NOT.shape # torch.Size([250, 300])
 ```
 
 Compute bases of the intersection
 ```python
 A_AND_B = intersection(A, B)
-A_AND_B.shape # (1, 300)
+A_AND_B.shape # torch.Size([1, 300])
 ```
 
 Compute bases of the sum space
 ```python
 A_OR_B = sum_space(A, B)
-A_OR_B.shape # (130, 300)
+A_OR_B.shape # torch.Size([130, 300])
 ```
 
 Compute soft membership degree
 ```python
-v = np.random.random_sample(300,) 
-soft_membership(A, v) # 0.89
+v = torch.rand(300, device=device)
+soft_membership(A, v) # tensor(0.89)
 ```
+
+### Note
+The previous numpy-based operations have been moved to a separate folder. If you still need to use them, you can find them in the `subspace/legacy_operations` folder. 

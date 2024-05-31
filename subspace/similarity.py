@@ -17,8 +17,6 @@ def get_weights(A, B, weight):
 
 
 def pairwise_cosine_matrix(matrix1, matrix2):
-    # matrix1 の shape は (batch_size, num_features1, emb_dim)
-    # matrix2 の shape は (batch_size, num_features2, emb_dim)
     dot = torch.matmul(matrix1, matrix2.transpose(1, 2))
     matrix1_norm = torch.norm(matrix1, dim=-1, keepdim=True)
     matrix2_norm = torch.norm(matrix2, dim=-1, keepdim=True)
@@ -26,15 +24,15 @@ def pairwise_cosine_matrix(matrix1, matrix2):
     return dot / norm
 
 
-def subspace(A):
-    """ Return the matrix of the subspace
+def subspace_batch(A):
+    """ Return the matrix of the subspace for a batch of matrices
         Arg:
             A: Bases of a linear subspace (batchsize, num_bases, emb_dim)
         Return:
             S: Orthonormalized bases of a linear subspace (batchsize, num_bases, emb_dim)
         Example:
             >>> A = torch.randn(5, 4, 300)
-            >>> subspace(A)
+            >>> subspace_batch(A)
     """ 
     # orthonormalize
     S, _ = torch.linalg.qr(torch.transpose(A, 1, 2))
@@ -42,8 +40,9 @@ def subspace(A):
 
 
 @torch.jit.script
-def soft_membership(S, v):
-    """ Compute soft membership degree between a subspace and a vector
+def soft_membership_batch(S, v):
+    """ Compute soft membership degree between a subspace and a vector for a batch of vectors
+        
         Args:
             S: Orthonormalized bases of a linear subspace (batchsize, num_bases, emb_dim)
             v: vector (batchsize, emb_dim)
@@ -52,7 +51,7 @@ def soft_membership(S, v):
         Example:
             >>> S = torch.randn(5, 4, 300)
             >>> v = torch.randn(5, 300)
-            >>> soft_membership(S, v)
+            >>> soft_membership_batch(S, v)
     """    
     # normalize
     v = torch.nn.functional.normalize(v)
@@ -83,7 +82,7 @@ def subspace_johnson(A, B, weight="L2"):
             U should be a matrix of word embeddings
             V should be a matrix of orthonormalized bases
         """
-        softm = torch.stack([soft_membership(V, vec) 
+        softm = torch.stack([soft_membership_batch(V, vec) 
                              for vec in torch.transpose(U, 0, 1)]) 
         softm = torch.transpose(softm, 0, 1) 
         return torch.sum(softm * weights, 1)
@@ -92,8 +91,8 @@ def subspace_johnson(A, B, weight="L2"):
     weights_A, weights_B = get_weights(A, B, weight)
         
     # compute similarity
-    x = numerator(A, subspace(B), weights_A) / torch.sum(weights_A, 1)
-    y = numerator(B, subspace(A), weights_B) / torch.sum(weights_B, 1)
+    x = numerator(A, subspace_batch(B), weights_A) / torch.sum(weights_A, 1)
+    y = numerator(B, subspace_batch(A), weights_B) / torch.sum(weights_B, 1)
     return x + y
 
 
@@ -117,7 +116,7 @@ def subspace_bert_score(A, B, weight="L2"):
             U should be a matrix of word embeddings
             V should be a matrix of orthonormalized bases
         """
-        softm = torch.stack([soft_membership(V, vec) 
+        softm = torch.stack([soft_membership_batch(V, vec) 
                              for vec in torch.transpose(U, 0, 1)]) 
         softm = torch.transpose(softm, 0, 1) 
         return torch.sum(softm * weights, 1)
@@ -126,8 +125,8 @@ def subspace_bert_score(A, B, weight="L2"):
     weights_A, weights_B = get_weights(A, B, weight)
         
     # Cmpute P, R, F
-    R = numerator(A, subspace(B), weights_A) / torch.sum(weights_A, 1) # R は SubspaceJohnson の 左項
-    P = numerator(B, subspace(A), weights_B) / torch.sum(weights_B, 1) # P は SubspaceJohnson の 右項
+    R = numerator(A, subspace_batch(B), weights_A) / torch.sum(weights_A, 1) # R is the left term of SubspaceJohnson
+    P = numerator(B, subspace_batch(A), weights_B) / torch.sum(weights_B, 1) # P is the right term of SubspaceJohnson
     F = (2 * P * R) / (P + R)
     return P, R, F
 
