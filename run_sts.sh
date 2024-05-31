@@ -1,15 +1,22 @@
 #!/bin/bash
 
-# SimCSE-BERT
+# SubspaceBERTScore F
 python evaluation.py \
-    --model_name_or_path princeton-nlp/unsup-simcse-bert-base-uncased \
-    --pooler hidden_states_subspace \
+    --model_name_or_path bert-base-uncased \
+    --pooler hidden_states_subspace_bert_score_F \
     --task_set sts \
     --mode test
 
-# BERT
+# SubspaceBERTScore P
 python evaluation.py \
     --model_name_or_path bert-base-uncased \
-    --pooler hidden_states_subspace \
+    --pooler hidden_states_subspace_bert_score_P \
+    --task_set sts \
+    --mode test
+
+# SubspaceBERTScore R
+python evaluation.py \
+    --model_name_or_path bert-base-uncased \
+    --pooler hidden_states_subspace_bert_score_R \
     --task_set sts \
     --mode test
