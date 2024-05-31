@@ -19,10 +19,7 @@ PATH_TO_DATA = './SentEval/data'
 sys.path.insert(0, PATH_TO_SENTEVAL)
 import senteval
 
-
 # Import similarities
-import similarity
-#from subspace.similarity import subspace_johnson
 import subspace
 
 def subspace_bert_score_F(x, y, weight = "L2"):
@@ -77,13 +74,13 @@ def subspace_johnson(x, y, weight = "L2"):
     return subspace.subspace_johnson(x.unsqueeze(0), y.unsqueeze(0), weight).numpy()[0]
 
 def dynamax_jaccard(x, y):
-    return similarity.dynamax_jaccard(x.numpy(), y.numpy())
+    return subspace.dynamax_jaccard(x.numpy(), y.numpy())
 
 def symbolic_johnson(x, y):
-    return similarity.symbolic_johnson(x, y)
+    return subspace.symbolic_johnson(x, y)
 
 def symbolic_jaccard(x, y):
-    return similarity.symbolic_jaccard(x, y)
+    return subspace.symbolic_jaccard(x, y)
 
 def print_table(task_names, scores):
     tb = PrettyTable()
@@ -138,9 +135,10 @@ def main():
     # Load transformers' model checkpoint
     model = AutoModel.from_pretrained(args.model_name_or_path)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
-    #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
-    device = torch.device("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
+    #device = torch.device("cpu")
     model = model.to(device)
+    print(device)
     
     # Set up the tasks
     if args.task_set == 'sts':
@@ -323,17 +321,17 @@ def main():
                 scores.append("0.00")
         print_table(task_names, scores)
 
-        task_names = []
-        scores = []
-        for task in ['MR', 'CR', 'SUBJ', 'MPQA', 'SST2', 'TREC', 'MRPC']:
-            task_names.append(task)
-            if task in results:
-                scores.append("%.2f" % (results[task]['devacc']))    
-            else:
-                scores.append("0.00")
-        task_names.append("Avg.")
-        scores.append("%.2f" % (sum([float(score) for score in scores]) / len(scores)))
-        print_table(task_names, scores)
+        #task_names = []
+        #scores = []
+        #for task in ['MR', 'CR', 'SUBJ', 'MPQA', 'SST2', 'TREC', 'MRPC']:
+        #    task_names.append(task)
+        #    if task in results:
+        #        scores.append("%.2f" % (results[task]['devacc']))    
+        #    else:
+        #        scores.append("0.00")
+        #task_names.append("Avg.")
+        #scores.append("%.2f" % (sum([float(score) for score in scores]) / len(scores)))
+        #print_table(task_names, scores)
 
     elif args.mode == 'test' or args.mode == 'fasttest':
         print("------ %s ------" % (args.mode))

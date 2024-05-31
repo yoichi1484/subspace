@@ -52,8 +52,19 @@ class STSEval(object):
             not_empty_idx = raw_scores != ''
 
             gs_scores = [float(x) for x in raw_scores[not_empty_idx]]
-            sent1 = np.array([s.split() for s in sent1])[not_empty_idx]
-            sent2 = np.array([s.split() for s in sent2])[not_empty_idx]
+
+            # ValueError
+            #sent1 = np.array([s.split() for s in sent1])[not_empty_idx]
+            #sent2 = np.array([s.split() for s in sent2])[not_empty_idx]
+
+            # Fixed ver (2024). https://github.com/facebookresearch/SentEval/issues/94            
+            sent1_lengths = [len(s.split()) for s in sent1]
+            max_length = max(sent1_lengths)
+            sent1 = np.array([s.split() + [''] * (max_length - len(s.split())) for s in sent1])[not_empty_idx]
+            sent2_lengths = [len(s.split()) for s in sent2]
+            max_length = max(sent2_lengths)
+            sent2 = np.array([s.split() + [''] * (max_length - len(s.split())) for s in sent2])[not_empty_idx]
+
             # sort data by length to minimize padding in batcher
             sorted_data = sorted(zip(sent1, sent2, gs_scores),
                                  key=lambda z: (len(z[0]), len(z[1]), z[2]))
