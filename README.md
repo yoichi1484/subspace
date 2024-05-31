@@ -1,6 +1,8 @@
 # Subspace Representations for Soft Set Operations and Sentence Similarities
 Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace Representations for Soft Set Operations and Sentence Similarities](https://arxiv.org/abs/2210.13034) (NAACL, 2024)
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yourusername/subspace/blob/main/notebook/subspace.ipynb)
+
 ![About](about.png)
 
 ## Setup
