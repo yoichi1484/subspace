@@ -9,5 +9,5 @@ setuptools==65.3.0
 skipthoughts==0.0.1
 tensorflow==2.10.0
 tensorflow_hub==0.12.0
-torch==1.12.1+cu116
+torch
 transformers==4.21.3
