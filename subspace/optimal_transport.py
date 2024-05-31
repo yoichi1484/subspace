@@ -1,3 +1,5 @@
+# https://kexue.fm/archives/7388
+
 import numpy as np
 from scipy.optimize import linprog
 
