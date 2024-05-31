@@ -1,37 +1,12 @@
-#MIT License
-#
-#Copyright (c) 2021 Princeton Natural Language Processing
-#
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
-#
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
-#
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
-# ==============================================================================
-
 import sys
 import io, os
 import numpy as np
 import logging
 import argparse
+from prettytable import PrettyTable
 import torch
 import transformers
 from transformers import AutoModel, AutoTokenizer
-from prettytable import PrettyTable
-import baselines
-import subspace
 
 # Set up logger
 logging.basicConfig(format='%(asctime)s : %(message)s', level=logging.DEBUG)
@@ -45,17 +20,70 @@ sys.path.insert(0, PATH_TO_SENTEVAL)
 import senteval
 
 
+# Import similarities
+import similarity
+#from subspace.similarity import subspace_johnson
+import subspace
+
+def subspace_bert_score_F(x, y, weight = "L2"):
+    P, R, F = subspace.subspace_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return F.numpy()[0]
+
+def subspace_bert_score_P(x, y, weight = "L2"):
+    P, R, F = subspace.subspace_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return P.numpy()[0]
+
+def subspace_bert_score_R(x, y, weight = "L2"):
+    P, R, F = subspace.subspace_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return R.numpy()[0]
+
+def subspace_bert_score_F_noweight(x, y, weight = "no"):
+    P, R, F = subspace.subspace_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return F.numpy()[0]
+
+def subspace_bert_score_P_noweight(x, y, weight = "no"):
+    P, R, F = subspace.subspace_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return P.numpy()[0]
+
+def subspace_bert_score_R_noweight(x, y, weight = "no"):
+    P, R, F = subspace.subspace_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return R.numpy()[0]
+
+def vanilla_bert_score_F(x, y, weight = "L2"):
+    P, R, F = subspace.vanilla_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return F.numpy()[0]
+
+def vanilla_bert_score_P(x, y, weight = "L2"):
+    P, R, F = subspace.vanilla_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return P.numpy()[0]
+
+def vanilla_bert_score_R(x, y, weight = "L2"):
+    P, R, F = subspace.vanilla_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return R.numpy()[0]
+
+def vanilla_bert_score_F_noweight(x, y, weight = "no"):
+    P, R, F = subspace.vanilla_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return F.numpy()[0]
+
+def vanilla_bert_score_P_noweight(x, y, weight = "no"):
+    P, R, F = subspace.vanilla_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return P.numpy()[0]
+
+def vanilla_bert_score_R_noweight(x, y, weight = "no"):
+    P, R, F = subspace.vanilla_bert_score(x.unsqueeze(0), y.unsqueeze(0), weight)
+    return R.numpy()[0]
+
 def subspace_johnson(x, y, weight = "L2"):
     return subspace.subspace_johnson(x.unsqueeze(0), y.unsqueeze(0), weight).numpy()[0]
 
 def dynamax_jaccard(x, y):
-    return baselines.dynamax_jaccard(x.numpy(), y.numpy())
+    return similarity.dynamax_jaccard(x.numpy(), y.numpy())
 
 def symbolic_johnson(x, y):
-    return baselines.symbolic_johnson(x, y)
+    return similarity.symbolic_johnson(x, y)
 
 def symbolic_jaccard(x, y):
-    return baselines.symbolic_jaccard(x, y)
+    return similarity.symbolic_jaccard(x, y)
 
 def print_table(task_names, scores):
     tb = PrettyTable()
@@ -70,18 +98,29 @@ def main():
     parser.add_argument("--pooler", type=str, 
             choices=['cls', 
                      'cls_before_pooler',                 # CLS-cos
-                     'avg',                               # Avg-cos
-                     #'avg_top2', 
-                     #'avg_first_last', 
-                     'hidden_states_subspace',            # SubspaceJohnson
+                     'avg', 'avg_top2', 'avg_first_last', # Avg-cos
+                     'hidden_states_subspace_johnson',      # SubspaceJohnson
+                     'hidden_states_subspace_bert_score_F', # SubspaceBERTScore
+                     'hidden_states_subspace_bert_score_P', # SubspaceBERTScore
+                     'hidden_states_subspace_bert_score_R', # SubspaceBERTScore
+                     'hidden_states_subspace_bert_score_F_noweight', # SubspaceBERTScore
+                     'hidden_states_subspace_bert_score_P_noweight', # SubspaceBERTScore
+                     'hidden_states_subspace_bert_score_R_noweight', # SubspaceBERTScore
+                     'hidden_states_vanilla_bert_score_F',  # BERTScore
+                     'hidden_states_vanilla_bert_score_P',  # BERTScore
+                     'hidden_states_vanilla_bert_score_R',  # BERTScore
+                     'hidden_states_vanilla_bert_score_F_noweight',  # BERTScore
+                     'hidden_states_vanilla_bert_score_P_noweight',  # BERTScore
+                     'hidden_states_vanilla_bert_score_R_noweight',  # BERTScore
                      'hidden_states_dynamax',             # DynaMax
-                     'words_for_symbolic_johnson',        # Symbolic set similarity (Johnson)
-                     'words_for_symbolic_jaccard'],       # Symbolic set similarity (Jaccard)
+                     "words_for_symbolic_johnson",        # Symbolic set similarity (Johnson)
+                     "words_for_symbolic_jaccard"],       # Symbolic set similarity (Jaccard)
             help="Which pooler to use")
     parser.add_argument("--mode", type=str, 
             choices=['dev', 'test', 'fasttest'],
             default='test', 
-            help="What evaluation mode to use (dev: fast mode, dev results; test: full mode, test results); fasttest: fast mode, test results")
+            help="What evaluation mode to use (dev: fast mode, \
+                        dev results; test: full mode, test results); fasttest: fast mode, test results")
     parser.add_argument("--task_set", type=str, 
             #choices=['sts', 'transfer', 'full', 'na'],
             default='sts',
@@ -129,11 +168,47 @@ def main():
     params['pooler'] = args.pooler 
     params['model_name'] = args.model_name_or_path
     
-    if args.pooler in ["hidden_states_subspace", "hidden_states_first_last_subspace"]: 
+    if args.pooler in ["hidden_states_subspace_johnson", "hidden_states_first_last_subspace_johnson"]: 
         params['similarity'] = subspace_johnson  
         
     elif args.pooler in ["hidden_states_dynamax", "hidden_states_first_last_dynamax"]:
         params['similarity'] = dynamax_jaccard
+        
+    elif args.pooler in ["hidden_states_subspace_bert_score_F", "hidden_states_first_last_subspace_bert_score_F"]: 
+        params['similarity'] = subspace_bert_score_F
+        
+    elif args.pooler in ["hidden_states_subspace_bert_score_P", "hidden_states_first_last_subspace_bert_score_P"]: 
+        params['similarity'] = subspace_bert_score_P
+        
+    elif args.pooler in ["hidden_states_subspace_bert_score_R", "hidden_states_first_last_subspace_bert_score_R"]: 
+        params['similarity'] = subspace_bert_score_R
+        
+    elif args.pooler in ["hidden_states_subspace_bert_score_F_noweight"]: 
+        params['similarity'] = subspace_bert_score_F_noweight
+        
+    elif args.pooler in ["hidden_states_subspace_bert_score_P_noweight"]: 
+        params['similarity'] = subspace_bert_score_P_noweight
+        
+    elif args.pooler in ["hidden_states_subspace_bert_score_R_noweight"]: 
+        params['similarity'] = subspace_bert_score_R_noweight
+        
+    elif args.pooler in ["hidden_states_vanilla_bert_score_F", "hidden_states_first_last_vanilla_bert_score_F"]: 
+        params['similarity'] = vanilla_bert_score_F
+        
+    elif args.pooler in ["hidden_states_vanilla_bert_score_P", "hidden_states_first_last_vanilla_bert_score_P"]: 
+        params['similarity'] = vanilla_bert_score_P
+        
+    elif args.pooler in ["hidden_states_vanilla_bert_score_R", "hidden_states_first_last_vanilla_bert_score_R"]: 
+        params['similarity'] = vanilla_bert_score_R
+        
+    elif args.pooler in ["hidden_states_vanilla_bert_score_F_noweight"]: 
+        params['similarity'] = vanilla_bert_score_F_noweight
+        
+    elif args.pooler in ["hidden_states_vanilla_bert_score_P_noweight"]: 
+        params['similarity'] = vanilla_bert_score_P_noweight
+        
+    elif args.pooler in ["hidden_states_vanilla_bert_score_R_noweight"]: 
+        params['similarity'] = vanilla_bert_score_R_noweight
         
     #elif args.pooler in ["hidden_states_wrd", "hidden_states_first_last_wrd"]:
     #    params['similarity'] = wrd
@@ -278,17 +353,17 @@ def main():
         scores.append("%.2f" % (sum([float(score) for score in scores]) / len(scores)))
         print_table(task_names, scores)
 
-        task_names = []
-        scores = []
-        for task in ['MR', 'CR', 'SUBJ', 'MPQA', 'SST2', 'TREC', 'MRPC']:
-            task_names.append(task)
-            if task in results:
-                scores.append("%.2f" % (results[task]['acc']))    
-            else:
-                scores.append("0.00")
-        task_names.append("Avg.")
-        scores.append("%.2f" % (sum([float(score) for score in scores]) / len(scores)))
-        print_table(task_names, scores)
+        #task_names = []
+        #scores = []
+        #for task in ['MR', 'CR', 'SUBJ', 'MPQA', 'SST2', 'TREC', 'MRPC']:
+        #    task_names.append(task)
+        #    if task in results:
+        #        scores.append("%.2f" % (results[task]['acc']))    
+        #    else:
+        #        scores.append("0.00")
+        #task_names.append("Avg.")
+        #scores.append("%.2f" % (sum([float(score) for score in scores]) / len(scores)))
+        #print_table(task_names, scores)
 
 
 if __name__ == "__main__":
