@@ -5,6 +5,7 @@ Yoichi Ishibashi, Sho Yokoi, Katsuhito Sudoh, Satoshi Nakamura: [Subspace Repres
 ## Setup
 Install the required packages.
 ```
+cd subspace
 pip install -r requirements.txt
 ```
 
@@ -34,6 +35,7 @@ bash download_dataset.sh
 The evaluation scripts and the calculation of correlation coefficients are based on the code of [Gao & Yao](https://github.com/princeton-nlp/SimCSE).
 Here is how to run the script:
 ```
+cd ../../../
 bash run_sts.sh
 ```
 
