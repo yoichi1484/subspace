@@ -17,6 +17,8 @@ def get_weights(A, B, weight):
 
 
 def pairwise_cosine_matrix(matrix1, matrix2):
+    # matrix1 の shape は (batch_size, num_features1, emb_dim)
+    # matrix2 の shape は (batch_size, num_features2, emb_dim)
     dot = torch.matmul(matrix1, matrix2.transpose(1, 2))
     matrix1_norm = torch.norm(matrix1, dim=-1, keepdim=True)
     matrix2_norm = torch.norm(matrix2, dim=-1, keepdim=True)
@@ -124,7 +126,38 @@ def subspace_bert_score(A, B, weight="L2"):
     weights_A, weights_B = get_weights(A, B, weight)
         
     # Cmpute P, R, F
-    R = numerator(A, subspace(B), weights_A) / torch.sum(weights_A, 1) 
-    P = numerator(B, subspace(A), weights_B) / torch.sum(weights_B, 1)
+    R = numerator(A, subspace(B), weights_A) / torch.sum(weights_A, 1) # R は SubspaceJohnson の 左項
+    P = numerator(B, subspace(A), weights_B) / torch.sum(weights_B, 1) # P は SubspaceJohnson の 右項
+    F = (2 * P * R) / (P + R)
+    return P, R, F
+
+
+def vanilla_bert_score(A, B, weight="L2"):  
+    """ Compute similarity between two vector sets (sentences)
+        Args:
+            A: Matrix of word embeddings for the first sentence
+               (batchsize, num_bases, dim)
+            B: Matrix of word embeddings for the second sentence
+               (batchsize, num_bases, dim)
+        Return:
+            similarity between A and B (batchsize,)
+        Example:
+            >>> A = torch.randn(5, 3, 300)
+            >>> B = torch.randn(5, 4, 300)
+            >>> vanilla_bert_score(A, B)
+    """        
+    def numerator(pairwise_cos, dim, weights):
+        max_cos, _ = pairwise_cos.max(dim=dim)
+        return torch.sum(max_cos * weights, 1) # (max_cos * weights).sum(dim=1)
+        
+    # get weights
+    weights_A, weights_B = get_weights(A, B, weight)
+        
+    # Pairwise cosine
+    pairwise_cos = pairwise_cosine_matrix(A, B)
+        
+    # Cmpute P, R, F
+    R = numerator(pairwise_cos, 2, weights_A) / torch.sum(weights_A, 1) # R は SubspaceJohnson の 左項
+    P = numerator(pairwise_cos, 1, weights_B) / torch.sum(weights_B, 1) # P は SubspaceJohnson の 右項
     F = (2 * P * R) / (P + R)
     return P, R, F

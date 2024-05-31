@@ -3,7 +3,7 @@ import transformers
 from transformers import AutoTokenizer, AutoModel
 from numpy import ndarray
 import numpy as np
-from .similarity import subspace_johnson, subspace_bert_score
+from .similarity import subspace_johnson, subspace_bert_score, vanilla_bert_score
 
 
 class MySimilarity:
@@ -63,3 +63,10 @@ class SubspaceBERTScore(MySimilarity):
         hidden_states1 = self.encode(sentence1)
         hidden_states2 = self.encode(sentence2)
         return subspace_bert_score(hidden_states1, hidden_states2, weight)
+    
+    
+class VanillaBERTScore(MySimilarity):
+    def __call__(self, sentence1, sentence2, weight="L2"):
+        hidden_states1 = self.encode(sentence1)
+        hidden_states2 = self.encode(sentence2)
+        return vanilla_bert_score(hidden_states1, hidden_states2, weight)
